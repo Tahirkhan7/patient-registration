@@ -1,11 +1,11 @@
-import { Pglite } from '@electric-sql/pglite'
+import { PGlite } from "@electric-sql/pglite";
 
 let db;
-const BC = new BroadcastChannel("pglite-sync");
+const channel = new BroadcastChannel("pglite-sync");
 
 export const initDb = async () => {
   if (!db) {
-    db = new Pglite('idb://patient-db');
+    db = new PGlite("idb://patients");
     await db.exec(`
       CREATE TABLE IF NOT EXISTS patients (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,15 +21,21 @@ export const initDb = async () => {
 };
 
 export const getDb = () => db;
+export const broadcastUpdate = () => channel.postMessage("update");
+export const subscribeToUpdates = (callback) => {
+  channel.onmessage = (e) => {
+    if (e.data === "update") callback();
+  };
+};
 
 export const syncAcrossTabs = (callback) => {
-  BC.onmessage = (event) => {
-    if (event.data === 'db-updated') {
+  channel.onmessage = (event) => {
+    if (event.data === "db-updated") {
       callback();
     }
   };
 };
 
 export const notifyUpdate = () => {
-  BC.postMessage('db-updated');
+  channel.postMessage("db-updated");
 };
