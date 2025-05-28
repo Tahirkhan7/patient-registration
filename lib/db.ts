@@ -82,6 +82,10 @@ export async function getAllPatients(): Promise<Patient[]> {
   }));
 }
 
+function toCamelCase(str: string): string {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
 export async function executeQuery(
   sql: string
 ): Promise<{ data: any[]; columns: string[] }> {
@@ -92,9 +96,22 @@ export async function executeQuery(
     throw new Error("Only SELECT queries are supported.");
   }
 
-  const result = await db.query(sql);
+  const results = await db.exec(sql);
+
+  const allRows = results.flatMap((r) => r.rows ?? []);
+  const data = allRows.map((row) => {
+    const newRow: Record<string, any> = {};
+    for (const key in row) {
+      newRow[toCamelCase(key)] = row[key];
+    }
+    return newRow;
+  });
+
+  const columns =
+    results[0]?.fields?.map((field) => toCamelCase(field.name)) ?? [];
+
   return {
-    data: result.rows,
-    columns: result.columns,
+    data,
+    columns,
   };
 }

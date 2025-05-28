@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PatientRegistration } from "@/components/patient-registration";
 import { getDb } from "@/lib/db";
 import { PatientList } from "@/components/patient-list";
+import { SqlQuery } from "@/components/sql-query";
 
 export default function Home() {
   const [isDbReady, setIsDbReady] = useState(false);
@@ -34,6 +35,7 @@ export default function Home() {
         <TabsList className="mb-6 grid w-full grid-cols-3">
           <TabsTrigger value="register">Register Patient</TabsTrigger>
           <TabsTrigger value="list">Patient List</TabsTrigger>
+          <TabsTrigger value="query">SQL Query</TabsTrigger>
         </TabsList>
 
         <TabsContent value="register">
@@ -42,6 +44,10 @@ export default function Home() {
 
         <TabsContent value="list">
           <PatientList />
+        </TabsContent>
+
+        <TabsContent value="query">
+          <SqlQuery />
         </TabsContent>
       </Tabs>
     </main>

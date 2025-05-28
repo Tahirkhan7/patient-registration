@@ -1,47 +1,60 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { getAllPatients, type Patient } from "@/lib/db"
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { getAllPatients, type Patient } from "@/lib/db";
 
 export function PatientList() {
-  const [patients, setPatients] = useState<Patient[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadPatients = async () => {
-      setIsLoading(true)
-      const data = await getAllPatients()
-      setPatients(data)
-      setIsLoading(false)
-    }
+      setIsLoading(true);
+      const data = await getAllPatients();
+      setPatients(data);
+      setIsLoading(false);
+    };
 
-    loadPatients()
+    loadPatients();
 
     // Listen for database changes from other tabs
     const handleStorageChange = () => {
-      loadPatients()
-    }
+      loadPatients();
+    };
 
-    window.addEventListener("storage-changed", handleStorageChange)
+    window.addEventListener("storage-changed", handleStorageChange);
 
     return () => {
-      window.removeEventListener("storage-changed", handleStorageChange)
-    }
-  }, [])
+      window.removeEventListener("storage-changed", handleStorageChange);
+    };
+  }, []);
 
   const filteredPatients = patients.filter((patient) => {
-    const searchLower = searchTerm.toLowerCase()
+    const searchLower = searchTerm.toLowerCase();
     return (
       patient.firstName.toLowerCase().includes(searchLower) ||
       patient.lastName.toLowerCase().includes(searchLower) ||
       patient.email.toLowerCase().includes(searchLower) ||
       patient.phone.includes(searchTerm)
-    )
-  })
+    );
+  });
 
   return (
     <Card>
@@ -77,7 +90,9 @@ export function PatientList() {
                   <TableRow key={patient.id}>
                     <TableCell className="font-medium">{`${patient.firstName} ${patient.lastName}`}</TableCell>
                     <TableCell>{patient.dateOfBirth}</TableCell>
-                    <TableCell className="capitalize">{patient.gender}</TableCell>
+                    <TableCell className="capitalize">
+                      {patient.gender}
+                    </TableCell>
                     <TableCell>{patient.email}</TableCell>
                     <TableCell>{patient.phone}</TableCell>
                   </TableRow>
@@ -88,5 +103,5 @@ export function PatientList() {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
