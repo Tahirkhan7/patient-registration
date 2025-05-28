@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PatientRegistration } from "@/components/patient-registration";
 import { getDb } from "@/lib/db";
+import { PatientList } from "@/components/patient-list";
 
 export default function Home() {
   const [isDbReady, setIsDbReady] = useState(false);
@@ -32,10 +33,15 @@ export default function Home() {
       <Tabs defaultValue="register" className="w-full">
         <TabsList className="mb-6 grid w-full grid-cols-3">
           <TabsTrigger value="register">Register Patient</TabsTrigger>
+          <TabsTrigger value="list">Patient List</TabsTrigger>
         </TabsList>
 
         <TabsContent value="register">
           <PatientRegistration />
+        </TabsContent>
+
+        <TabsContent value="list">
+          <PatientList />
         </TabsContent>
       </Tabs>
     </main>
